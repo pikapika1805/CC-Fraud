@@ -1,22 +1,15 @@
 from flask import Flask, request, jsonify
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
-
-# Initialize SparkSession
-spark = SparkSession.builder \
-    .appName("APIExample") \
-    .getOrCreate()
+import pandas as pd
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Load your DataFrame from the path
-file_path = 'api_dataset'
-df = spark.read.option("header", "true") \
-    .option("delimiter", ",") \
-    .option("quote", "\"") \
-    .option("escape", "\"") \
-    .csv(file_path)
+# Load Parquet file into a Pandas DataFrame
+file_path = 'api_dataset/cc_transactions_detail.parquet'
+df = pd.read_parquet(file_path)
+
+# Display first few rows
+print(df.head())
 
 # Create a route to query the DataFrame
 @app.route('/query', methods=['GET'])
@@ -32,26 +25,22 @@ def query_data():
         return jsonify({'error': f'Column {column} does not exist'}), 400
 
     # Filter the DataFrame based on query parameters
-    filtered_df = df.filter(col(column) == value)
+    filtered_df = df[df[column] == value]
 
     # Check if there are any results
-    if filtered_df.count() == 0:
+    if filtered_df.empty:
         return jsonify({'message': 'No records found'}), 404
 
-    # Convert to Pandas DataFrame for easy JSON conversion
-    result_df = filtered_df.toPandas()
-
     # Convert to JSON format
-    result_json = result_df.to_json(orient='records')
+    result_json = filtered_df.to_json(orient='records')
 
     return jsonify(result_json)
 
 # Create a route to get all data (optional)
 @app.route('/data', methods=['GET'])
 def get_data():
-    # Convert the entire DataFrame to Pandas DataFrame for easy JSON conversion
-    result_df = df.toPandas()
-    result_json = result_df.to_json(orient='records')
+    # Convert the entire DataFrame to JSON format
+    result_json = df.to_json(orient='records')
     return jsonify(result_json)
 
 if __name__ == '__main__':
