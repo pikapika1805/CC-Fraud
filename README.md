@@ -56,4 +56,13 @@ Content:<br>
 - Fraud stats - `curl "http://localhost:5000/fraud_stats"`
 - Not Fraud stats - `curl "http://localhost:5000/not_fraud_stats"`
 - Stats group by is_fraud - `curl "http://localhost:5000/both_fraud_stats"`
+- Geo Cardholder (fraud) - ` curl "http://localhost:5000/geo_cardholder_fraud"`
+- Geo Cardholder (fraud & non fraud) - ` curl "http://localhost:5000/geo_cardholder_both"`
+- Job Cardholder (fraud) - `curl "http://localhost:5000/job_cardholder_fraud"`
+- Job Cardholder (fraud & non fraud) - `curl "http://localhost:5000/job_cardholder_both"`
+- City Cardholder (fraud) - `curl "http://localhost:5000/cardholder_city_fraud"`
+- City Cardholder (fraud & non fraud) - `curl "http://localhost:5000/cardholder_city_both"`
+- Age cardholder (fraud) - `curl "http://localhost:5000/age_cardholder_fraud"`
+- Age cardholder (fraud & non fraud) - `curl "http://localhost:5000/age_cardholder_both"`
+- Consolidated statitical metrics - `curl "http://localhost:5000/conso_metrics"`
 
