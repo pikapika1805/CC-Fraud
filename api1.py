@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import numpy as np
+import sqlite3
+from decimal import Decimal
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -11,57 +13,63 @@ CORS(app)
 file_path = 'api_dataset/cc_transactions_detail.parquet'
 df = pd.read_parquet(file_path)
 
+# Convert Decimal columns to floats
+def convert_decimals_to_floats(df):
+    for col in df.select_dtypes(include=[object]).columns:
+        if df[col].apply(lambda x: isinstance(x, Decimal)).any():
+            df[col] = df[col].apply(lambda x: float(x) if isinstance(x, Decimal) else x)
+    return df
+
+df = convert_decimals_to_floats(df)
 df = df.replace({np.nan: None})
+
+# Create an SQLite in-memory database and load DataFrame into it
+def get_sqlite_connection():
+    conn = sqlite3.connect(':memory:')
+    df.to_sql('df', conn, index=False, if_exists='replace')
+    return conn
 
 @app.route('/data', methods=['GET'])
 def get_data():
     return jsonify(df.to_dict(orient="records"))
 
+@app.route('/merchant_data', methods=['GET'])
+def get_merchant_data():
+    conn = get_sqlite_connection()
+    
+    # SQL query for aggregation
+    query = """
+    SELECT merchant, 
+           merch_lat, 
+           merch_long, 
+           category, 
+           is_fraud, 
+           COUNT(*) as count, 
+           SUM(amt) as total_amount
+    FROM df
+    GROUP BY merchant, merch_lat, merch_long, category, is_fraud
+    """
+    
+    # Execute query and load results into DataFrame
+    result_df = pd.read_sql_query(query, conn)
+    
+    # Close connection
+    conn.close()
+    
+    # Convert DataFrame to dictionary
+    return jsonify(result_df.to_dict(orient="records"))
+
 @app.route('/query', methods=['GET'])
 def query_data():
     column = request.args.get('column')
     value = request.args.get('value')
-    filtered_df = df[df[column] == value]
-    filtered_df = filtered_df.replace({np.nan: None})
-    return jsonify(filtered_df.to_dict(orient="records"))
+    
+    if column and value:
+        filtered_df = df[df[column] == value]
+        filtered_df = filtered_df.replace({np.nan: None})
+        return jsonify(filtered_df.to_dict(orient="records"))
+    else:
+        return jsonify({"error": "Please provide both 'column' and 'value' parameters"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# Display first few rows
-# print(df.head())
-
-# # Create a route to query the DataFrame
-# @app.route('/query', methods=['GET'])
-# def query_data():
-#     column = request.args.get('column')
-#     value = request.args.get('value')
-    
-#     if not column or not value:
-#         return jsonify({'error': 'Missing column or value'}), 400
-
-#     # Check if the column exists in the DataFrame
-#     if column not in df.columns:
-#         return jsonify({'error': f'Column {column} does not exist'}), 400
-
-#     # Filter the DataFrame based on query parameters
-#     filtered_df = df[df[column] == value]
-
-#     # Check if there are any results
-#     if filtered_df.empty:
-#         return jsonify({'message': 'No records found'}), 404
-
-#     # Convert to JSON format
-#     result_json = filtered_df.to_json(orient='records')
-
-#     return jsonify(result_json)
-
-# # Create a route to get all data (optional)
-# @app.route('/data', methods=['GET'])
-# def get_data():
-#     # Convert the entire DataFrame to JSON format
-#     result_json = df.to_json(orient='records')
-#     return jsonify(result_json)
-
-# if __name__ == '__main__':
-#     app.run(host='0.0.0.0', port=5000, debug=True)
