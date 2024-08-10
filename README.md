@@ -16,6 +16,9 @@ Content:<br>
 - Dataset 4:
 - Dataset 5:
 
+# Pre-requisite installation
+<br> run `pip install pandas flask`
+
 # How to run api and call api
 <br>To execute api for main_dataset: run `python api1.py`
 <br>To call api to test dataset: run `curl "http://localhost:5000/data"`
