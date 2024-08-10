@@ -52,7 +52,7 @@ Content:<br>
 - Fraud by date - `curl "http://localhost:5000/fraud_by_date"`
 - Category count and amount (fraud only) - `curl "http://localhost:5000/cat_fraud_only"`
 - Category count and amount (fraud & non fraud) - `curl "http://localhost:5000/cat_all"`
-- Merchant geo (fraud only) - curl "http://localhost:5000/merchant_geo_fraud"
+- Merchant geo (fraud only) - `curl "http://localhost:5000/merchant_geo_fraud"`
 - Fraud stats - `curl "http://localhost:5000/fraud_stats"`
 - Not Fraud stats - `curl "http://localhost:5000/not_fraud_stats"`
 - Stats group by is_fraud - `curl "http://localhost:5000/both_fraud_stats"`
