@@ -65,4 +65,5 @@ Content:<br>
 - Age cardholder (fraud) - `curl "http://localhost:5000/age_cardholder_fraud"`
 - Age cardholder (fraud & non fraud) - `curl "http://localhost:5000/age_cardholder_both"`
 - Consolidated statitical metrics - `curl "http://localhost:5000/conso_metrics"`
+- Consolidated Transactions Fraud metrics - `curl "http://localhost:5000/stats_conso_card"`
 
