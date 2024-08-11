@@ -414,7 +414,44 @@ def get_conso_metrics():
     # Convert DataFrame to dictionary
     return jsonify(result_df.to_dict(orient="records"))
 
+@app.route('/stats_conso_card', methods=['GET'])
+def get_stats_conso_card():
+    conn = get_sqlite_connection()
+    
+    # SQL query for aggregation
+    query = """
+    SELECT "Transaction Count" AS metrics,
+    count(*) as value
+    FROM df
+    
+    UNION
+    
+    SELECT "Fraud Count" AS metrics,
+    SUM(CASE WHEN is_fraud = 'fraud' THEN 1 ELSE 0 END) as value
+    FROM df
+    
+    UNION
+    
+    SELECT "Fraud Amount" AS metrics,
+    SUM(CASE WHEN is_fraud = 'fraud' THEN amt ELSE 0 END) as value
+    FROM df
+    
+    UNION
+    
+    SELECT "Fraud Percentage" AS metrics,
+    (SUM(CASE WHEN is_fraud = 'fraud' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) as value
+    FROM df
 
+    """
+    
+    # Execute query and load results into DataFrame
+    result_df = pd.read_sql_query(query, conn)
+    
+    # Close connection
+    conn.close()
+    
+    # Convert DataFrame to dictionary
+    return jsonify(result_df.to_dict(orient="records"))
 
 # @app.route('/query', methods=['GET'])
 # def query_data():
