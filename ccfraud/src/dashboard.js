@@ -41,36 +41,42 @@ const Dashboard = () => {
     width: '60px',
     height: '60px',
     fontSize: '24px',
-    margin: '20px auto',
+  };
+
+  const headerStyles = {
     display: 'flex',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: '30px',
   };
 
   return (
     <div style={themeStyles}>
-      <Typography 
-        variant="h2" 
-        gutterBottom 
-        style={{
-          fontWeight: 'bold',
-          color: darkMode ? '#f39c12' : '#2980b9',
-          textAlign: 'center',
-          marginBottom: '30px',
-          textTransform: 'uppercase',
-          letterSpacing: '2px',
-        }}
-      >
-        Credit Card Fraud Analysis
-      </Typography>
-
-      {/* Toggle Button for Dark/Light Mode */}
-      <IconButton
-        onClick={toggleDarkMode}
-        style={iconButtonStyles}
-      >
-        {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
-      </IconButton>
+      <div style={headerStyles}>
+        <div style={{ flex: 1 }}></div>
+        <Typography 
+          variant="h2" 
+          style={{
+            fontWeight: 'bold',
+            color: darkMode ? '#f39c12' : '#2980b9',
+            textAlign: 'center',
+            textTransform: 'uppercase',
+            letterSpacing: '2px',
+            flex: 2,
+          }}
+        >
+          Credit Card Fraud Analysis
+        </Typography>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          {/* Toggle Button for Dark/Light Mode */}
+          <IconButton
+            onClick={toggleDarkMode}
+            style={iconButtonStyles}
+          >
+            {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
+        </div>
+      </div>
 
       {/* Metrics Cards */}
       <Card style={cardStyles}>
