@@ -10,7 +10,7 @@ Dataset used - https://www.kaggle.com/datasets/neharoychoudhury/credit-card-frau
 2. Create Virtual Environment
  venv\Scripts\activate
 3. Install Required Packages
- pip install pandas flask
+  `pip install pandas flask` and `pip install pytest requests`
 
 # Run API 
 1. Execute API for Main Dataset
@@ -19,6 +19,10 @@ Dataset used - https://www.kaggle.com/datasets/neharoychoudhury/credit-card-frau
 `curl "http://localhost:5000/data"`
 3. To Call API to Query Dataset
  `curl "http://localhost:5000/query?column=<column_name>&value=<value_name>"`
+
+# QA API Testing
+1. Execute API for Main Dataset
+`pytest test_api.py`
 
  # How to Start the Web-based Dashboard
 1. Navigate to Frontend Directory
