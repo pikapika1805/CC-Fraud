@@ -25,9 +25,9 @@ def test_get_fraud_by_date():
 
     # Define the expected record
     expected_record = {
-        "amount": 3874.2100000000005,
-        "extracted_date": "2020-11-20",
-        "transaction_count": 7
+        "amount": 1343.52,
+        "extracted_date": "2019-01-04",
+        "transaction_count": 5
     }
 
     # Check if the expected record is in the response data
@@ -45,7 +45,7 @@ def test_get_stats_conso_card():
     # Define the expected metric
     expected_metric = {
         "metrics": "Fraud Amount",
-        "value": 923192.6499999997
+        "value": 923192.65
     }
 
     # Check if the expected metric is in the response data

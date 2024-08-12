@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Card, CardContent, Typography, IconButton } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, Typography, IconButton, Button } from '@mui/material';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import GeoMap from './GeoMap';
@@ -9,12 +9,26 @@ import AgeFraudChart from './AgeFraudChart';
 import FraudByDateChart from './FraudByDateChart';
 import MetricsCards from './MetricsCards';
 import MetricsTable from './MetricsTable';
+import Login from './Login';
 
 const Dashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    localStorage.removeItem('token');
   };
 
   const themeStyles = {
@@ -50,10 +64,20 @@ const Dashboard = () => {
     marginBottom: '30px',
   };
 
+  // If the user is not authenticated, show the login form
+  if (!token) {
+    return <Login setToken={setToken} />;
+  }
+
   return (
     <div style={themeStyles}>
       <div style={headerStyles}>
-        <div style={{ flex: 1 }}></div>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+          {/* Logout Button */}
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
+        </div>
         <Typography 
           variant="h2" 
           style={{
@@ -90,7 +114,7 @@ const Dashboard = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
         <Card style={cardStyles}>
           <CardContent>
-            <Typography variant="h5" style={contentStyles}>Fraud Transaction Count & Amount by Transaction Date</Typography>
+            <Typography variant="h5" style={contentStyles}>Top 10 Fraud Transaction Count & Amount by Transaction Date</Typography>
             <div style={{ height: '400px' }}>
               <FraudByDateChart />
             </div>
@@ -106,7 +130,7 @@ const Dashboard = () => {
         </Card>
         <Card style={cardStyles}>
           <CardContent>
-            <Typography variant="h5" style={contentStyles}>Fraud Transaction Count & Amount by Cardholder Job</Typography>
+            <Typography variant="h5" style={contentStyles}>Top 10 Fraud Transaction Count & Amount by Cardholder Job</Typography>
             <div style={{ height: '400px' }}>
               <JobFraudChart />
             </div>
@@ -114,7 +138,7 @@ const Dashboard = () => {
         </Card>
         <Card style={cardStyles}>
           <CardContent>
-            <Typography variant="h5" style={contentStyles}>Fraud Transaction Amount by Cardholder City</Typography>
+            <Typography variant="h5" style={contentStyles}>Top 10 Fraud Transaction Amount by Cardholder City</Typography>
             <div style={{ height: '400px' }}>
               <CityFraudChart />
             </div>
@@ -130,7 +154,7 @@ const Dashboard = () => {
         </Card>
         <Card style={cardStyles}>
           <CardContent>
-            <Typography variant="h5" style={contentStyles}>Fraud Transaction Count by Cardholder Age</Typography>
+            <Typography variant="h5" style={contentStyles}>Top 10 Fraud Transaction Count by Cardholder Age</Typography>
             <div style={{ height: '400px' }}>
               <AgeFraudChart />
             </div>
