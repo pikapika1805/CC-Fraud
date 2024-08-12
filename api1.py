@@ -1,17 +1,51 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import pandas as pd
-import numpy as np
-import sqlite3
+from flask_cors import CORS
+import jwt
+import datetime
 from decimal import Decimal
+import numpy as np
 
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
+# Secret key to encode and decode JWT tokens
+app.config['SECRET_KEY'] = 'your_secret_key'
+
+# Hardcoded example credentials (for demonstration purposes)
+users = {
+    "afikah_syafika": "we$urvived"
+}
+
 # Load Parquet file into a Pandas DataFrame
 file_path = 'api_dataset/cc_transactions_detail.parquet'
-df = pd.read_parquet(file_path)
+try:
+    df = pd.read_parquet(file_path)
+except Exception as e:
+    raise RuntimeError(f"Error loading Parquet file: {e}")
+
+# Login route
+@app.route('/login', methods=['POST'])
+def login():
+    auth_data = request.json
+
+    username = auth_data.get('username')
+    password = auth_data.get('password')
+
+    if not username or not password:
+        return jsonify({'message': 'Username and password are required!'}), 400
+
+    # Check if the username exists and the password matches
+    if username in users and users[username] == password:
+        # Create a JWT token
+        token = jwt.encode({
+            'username': username,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)  # Token expires in 30 minutes
+        }, app.config['SECRET_KEY'], algorithm="HS256")
+
+        return jsonify({'token': token})
+
+    return jsonify({'message': 'Invalid credentials!'}), 401
 
 # Convert Decimal columns to floats
 def convert_decimals_to_floats(df):
@@ -22,6 +56,7 @@ def convert_decimals_to_floats(df):
 
 df = convert_decimals_to_floats(df)
 df = df.replace({np.nan: None})
+
 
 # Create an SQLite in-memory database and load DataFrame into it
 def get_sqlite_connection():
