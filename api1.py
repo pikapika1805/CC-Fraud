@@ -83,6 +83,7 @@ def get_fraud_by_date():
     FROM df
     WHERE is_fraud = 'fraud'
     GROUP BY extracted_date
+    ORDER BY 1
     """
     
     # Execute query and load results into DataFrame
