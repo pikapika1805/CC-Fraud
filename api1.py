@@ -5,12 +5,14 @@ import jwt
 import datetime
 from decimal import Decimal
 import numpy as np
+import sqlite3
+
 
 app = Flask(__name__)
 CORS(app)
 
 # Secret key to encode and decode JWT tokens
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = 'flask_app'
 
 # Hardcoded example credentials (for demonstration purposes)
 users = {
