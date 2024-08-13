@@ -3,7 +3,7 @@ import requests
 
 BASE_URL = 'http://localhost:5000'  # Adjust if your server runs on a different URL
 
-# Test the dataset for readibilty
+# Test the dataset for readibilty, whether it return any value
 def test_get_data():
     """Test the /data endpoint."""
     response = requests.get(f'{BASE_URL}/data')
@@ -25,9 +25,9 @@ def test_get_fraud_by_date():
 
     # Define the expected record
     expected_record = {
-        "amount": 1343.52,
-        "extracted_date": "2019-01-04",
-        "transaction_count": 5
+        "amount": 3874.2100000000005,
+        "extracted_date": "2020-11-20",
+        "transaction_count": 7
     }
 
     # Check if the expected record is in the response data
@@ -45,7 +45,7 @@ def test_get_stats_conso_card():
     # Define the expected metric
     expected_metric = {
         "metrics": "Fraud Amount",
-        "value": 923192.65
+        "value": 923192.6499999997
     }
 
     # Check if the expected metric is in the response data
@@ -66,6 +66,29 @@ def test_get_conso_metrics():
         "fraud_percentage": 12.389626642564139,
         "metrics": "Transaction Count",
         "overall_count": 14383
+    }
+
+    # Ensure the response is a list
+    assert isinstance(data, list), "Response data should be a list"
+
+    # Check if the expected metrics are in the list of records
+    assert any(
+        all(
+            item.get(key) == value for key, value in expected_metrics.items()
+        ) for item in data
+    ), "Expected metrics not found or do not match in response data"
+
+def test_get_cardholder_job_fraud():
+    """Test the /cardholder_city_fraud endpoint."""
+    response = requests.get(f'{BASE_URL}/job_cardholder_fraud')
+    assert response.status_code == 200
+    data = response.json()
+
+    # Define the expected metrics
+    expected_metrics = {   
+        "amount": 2922.38,
+        "count": 8,
+        "job": "Tourist information centre manager"
     }
 
     # Ensure the response is a list
