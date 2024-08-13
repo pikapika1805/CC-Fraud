@@ -26,7 +26,7 @@ Dataset used - https://www.kaggle.com/datasets/neharoychoudhury/credit-card-frau
 
  # How to Start the Web-based Dashboard
 1. Navigate to Frontend Directory
- `cd frontend`
+ `cd ccfraud`
 2. Install Dependencies
  `npm install`
 3. Start React App
