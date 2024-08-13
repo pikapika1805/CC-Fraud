@@ -31,3 +31,8 @@ Dataset used - https://www.kaggle.com/datasets/neharoychoudhury/credit-card-frau
  `npm install`
 3. Start React App
  `npm start`
+
+# Dashboard Credentials
+<br>For testing, please login through this credentials:
+<br> Username: `afikah_syafika`
+<br> Password: `we$urvived`
