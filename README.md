@@ -33,6 +33,6 @@ Dataset used - https://www.kaggle.com/datasets/neharoychoudhury/credit-card-frau
  `npm start`
 
 # Dashboard Credentials
-<br>For testing, please login through this credentials:
+To login into the dashboard, please login through this credentials:
 <br> Username: `afikah_syafika`
 <br> Password: `we$urvived`
